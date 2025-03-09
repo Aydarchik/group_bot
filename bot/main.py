@@ -5,7 +5,6 @@ from aiogram.types import BotCommand
 from aiogram.filters import Command
 from aiogram_dialog import DialogManager, StartMode, setup_dialogs
 
-
 from options import BOT_TOKEN
 from database import db_manager
 from states import MainDialog
@@ -17,9 +16,15 @@ async def set_commands(bot: Bot):
                 BotCommand(command="/menu", description="Открыть меню")]
     await bot.set_my_commands(commands)
 
+
 # Обработчик для команды /start
 async def cmd_start(message: types.Message, dialog_manager: DialogManager):
     chat_id = message.chat.id
+    tg_id = message.from_user.id
+
+    if not db_manager.select_user(tg_id=tg_id):
+        db_manager.add_user(tg_id=tg_id)
+
     for i in range(10):
         try:
             await message.bot.delete_message(chat_id, message.message_id - i)
@@ -27,9 +32,14 @@ async def cmd_start(message: types.Message, dialog_manager: DialogManager):
             continue
 
     await dialog_manager.start(MainDialog.start, mode=StartMode.RESET_STACK)
+    dialog_manager.dialog_data['tg_id'] = tg_id
+
 
 # Обработчик для команды /menu
 async def cmd_menu(message: types.Message, dialog_manager: DialogManager):
+    tg_id = message.from_user.id
+
+    dialog_manager.dialog_data['tg_id'] = tg_id
     await dialog_manager.start(MainDialog.menu, mode=StartMode.RESET_STACK)
 
 
@@ -49,6 +59,7 @@ async def main():
 
     await set_commands(bot)
     await dp.start_polling(bot)
+
 
 if __name__ == '__main__':
     asyncio.run(main())

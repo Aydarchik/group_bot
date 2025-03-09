@@ -31,32 +31,49 @@ class DatabaseManager:
         )
         ''')
 
-    def add_user(self, username: str):
-        self.cursor.execute("INSERT INTO users (tg_id) VALUES (?)", (username,))
-        self.conn.commit()
-        self.conn.close()
+        # insert #
 
-    def add_max_call(self, username: str, max_call: float):
-        self.cursor.execute("UPDATE users SET max_call = ? WHERE tg_id = ?", (max_call, username))
+    def add_user(self, tg_id: str):
+        self.cursor.execute("INSERT INTO users (tg_id) VALUES (?)", (tg_id,))
         self.conn.commit()
-        self.conn.close()
 
-    def add_min_call(self, username: str, min_call: float):
-        self.cursor.execute("UPDATE users SET min_call = ? WHERE tg_id = ?", (min_call, username))
+    def add_max_call(self, tg_id: str, max_call: int):
+        self.cursor.execute("UPDATE users SET max_call = ? WHERE tg_id = ?", (max_call, tg_id))
         self.conn.commit()
-        self.conn.close()
 
-    def add_day_call(self, username: str, day_call: float):
-        self.cursor.execute("UPDATE users SET day_call = ? WHERE tg_id = ?", (day_call, username))
+    def add_min_call(self, tg_id: str, min_call: int):
+        self.cursor.execute("UPDATE users SET min_call = ? WHERE tg_id = ?", (min_call, tg_id))
         self.conn.commit()
-        self.conn.close()
 
-    def add_food(self, username: str, food: str, food_call: float, protein: float, fat: float, carbohydrates: float):
-        self.cursor.execute("INSERT INTO foods (user_tg_id, food, food_call, protein, fat, carbohydrates) VALUES (?, ?, ?, ?, ?, ?)",
-                             (username, food, food_call, protein, fat, carbohydrates))
+    def add_day_call(self, tg_id: str, day_call: int):
+        self.cursor.execute("UPDATE users SET day_call = ? WHERE tg_id = ?", (day_call, tg_id))
         self.conn.commit()
-        self.conn.close()
-        
+
+    def add_food(self, tg_id: str, food: str, food_call: int, protein: int, fat: int, carbohydrates: int):
+        self.cursor.execute(
+            "INSERT INTO foods (user_tg_id, food, food_call, protein, fat, carbohydrates) VALUES (?, ?, ?, ?, ?, ?)",
+            (tg_id, food, food_call, protein, fat, carbohydrates))
+        self.conn.commit()
+
+        # select #
+
+    def select_user(self, tg_id: str):
+        self.cursor.execute('''
+            SELECT max_call, min_call, day_call FROM users
+            WHERE tg_id = ?
+        ''', (tg_id,))
+        user = self.cursor.fetchone()
+
+        if user:
+            return {
+                'max_call': user[0],
+                'min_call': user[1],
+                'day_call': user[2],
+            }
+
+        return None
+
+
 db_manager = DatabaseManager('database.db')
 
 if __name__ == "__main__":
