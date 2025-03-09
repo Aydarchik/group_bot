@@ -51,33 +51,9 @@ class DatabaseManager:
         self.conn.commit()
         self.conn.close()
 
-    def add_tg_id(self, user_tg_id: str, ):
-        self.cursor.execute("INSERT INTO foods (user_tg_id,) VALUES (?, ?)", (user_tg_id))
-        self.conn.commit()
-        self.conn.close()
-        
-    def add_food(self, food:str):
-        self.cursor.execute("INSERT INTO foods (food) VALUES (?)", (food,))
-        self.conn.commit()
-        self.conn.close()
-        
-    def add_food_call(self, food_call: str):
-        self.cursor.execute("INSERT INTO foods (food_call) VALUES (?)", (food_call,))
-        self.conn.commit()
-        self.conn.close()
-        
-    def add_protein(self, protein: str):
-        self.cursor.execute("INSERT INTO foods (protein) VALUES (?)", (protein,))
-        self.conn.commit()
-        self.conn.close()
-        
-    def add_fat(self, fat: str):
-        self.cursor.execute("INSERT INTO foods (fat) VALUES (?)", (fat,))
-        self.conn.commit()
-        self.conn.close()
-        
-    def add_carbohydrates(self, carbohydrates: str):
-        self.cursor.execute("INSERT INTO foods (carbohydrates) VALUES (?)", (carbohydrates,))
+    def add_food(self, username: str, food: str, food_call: float, protein: float, fat: float, carbohydrates: float):
+        self.cursor.execute("INSERT INTO foods (user_tg_id, food, food_call, protein, fat, carbohydrates) VALUES (?, ?, ?, ?, ?, ?)",
+                             (username, food, food_call, protein, fat, carbohydrates))
         self.conn.commit()
         self.conn.close()
         
