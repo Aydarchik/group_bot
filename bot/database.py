@@ -33,6 +33,29 @@ class DatabaseManager:
 
 db_manager = DatabaseManager('database.db')
 
-
+async def add_user(username: str):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO users (tg_id) VALUES (?)", (username,))
+    conn.commit()
+    conn.close()
+async def add_max_call(username: str, max_call: float):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute("UPDATE users SET max_call = ? WHERE tg_id = ?", (max_call, username))
+    conn.commit()
+    conn.close()
+async def add_min_call(username: str, min_call: float):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute("UPDATE users SET min_call = ? WHERE tg_id = ?", (min_call, username))
+    conn.commit()
+    conn.close()
+async def add_day_call(username: str, day_call: float):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute("UPDATE users SET day_call = ? WHERE tg_id = ?", (day_call, username))
+    conn.commit()
+    conn.close()
 if __name__ == "__main__":
     pass
