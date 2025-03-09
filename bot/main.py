@@ -7,6 +7,7 @@ from aiogram_dialog import DialogManager, StartMode, setup_dialogs
 
 
 from options import BOT_TOKEN
+from database import db_manager
 from states import MainDialog
 from windows import main_dialog
 
@@ -29,6 +30,7 @@ async def cmd_start(message: types.Message, dialog_manager: DialogManager):
 
 async def main():
     print("Bot is starting...")
+    db_manager.init_db()
 
     bot = Bot(token=BOT_TOKEN)
     dp = Dispatcher()
