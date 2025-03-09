@@ -13,7 +13,8 @@ from windows import main_dialog
 
 
 async def set_commands(bot: Bot):
-    commands = [BotCommand(command="/start", description="Запустить бота")]
+    commands = [BotCommand(command="/start", description="Запустить бота"),
+                BotCommand(command="/menu", description="Открыть меню")]
     await bot.set_my_commands(commands)
 
 # Обработчик для команды /start
@@ -26,6 +27,10 @@ async def cmd_start(message: types.Message, dialog_manager: DialogManager):
             continue
 
     await dialog_manager.start(MainDialog.start, mode=StartMode.RESET_STACK)
+
+# Обработчик для команды /menu
+async def cmd_menu(message: types.Message, dialog_manager: DialogManager):
+    await dialog_manager.start(MainDialog.menu, mode=StartMode.RESET_STACK)
 
 
 async def main():
@@ -40,6 +45,7 @@ async def main():
 
     # Регистрация команд
     dp.message.register(cmd_start, Command(commands="start"))
+    dp.message.register(cmd_menu, Command(commands="menu"))
 
     await set_commands(bot)
     await dp.start_polling(bot)
