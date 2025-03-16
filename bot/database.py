@@ -14,7 +14,7 @@ class DatabaseManager:
         tg_id INTEGER NOT NULL,
         max_call INTEGER,
         min_call INTEGER,
-        day_call INTEGER
+        day_call INTEGER DEFAULT 0
         )
         ''')
 
@@ -72,6 +72,41 @@ class DatabaseManager:
             }
 
         return None
+
+    def select_user_food(self, tg_id: int):
+        self.cursor.execute('''
+        SELECT id, food, food_call, protein, fat, carbohydrates FROM foods
+        WHERE user_tg_id = ?
+        ''', (tg_id, ))
+        foods = self.cursor.fetchall()
+        if foods:
+            return [{
+                'id': food[0],
+                'name': food[1],
+                'food_call': food[2],
+                'protein': food[3],
+                'fat': food[4],
+                'carbohydrates': food[5],
+                 }
+                for food in foods]
+
+        return []
+
+    def select_food(self, id: int):
+        self.cursor.execute('''
+        SELECT food_call FROM foods
+        WHERE id = ?
+        ''', (id, ))
+
+        return self.cursor.fetchone()
+
+    def select_user_day_call(self, tg_id: int):
+        self.cursor.execute('''
+        SELECT day_call FROM users
+        WHERE tg_id = ?
+        ''', (tg_id, ))
+
+        return self.cursor.fetchone()
 
 
 db_manager = DatabaseManager('database.db')

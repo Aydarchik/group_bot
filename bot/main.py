@@ -37,9 +37,7 @@ async def cmd_start(message: types.Message, dialog_manager: DialogManager):
 
 # Обработчик для команды /menu
 async def cmd_menu(message: types.Message, dialog_manager: DialogManager):
-    tg_id = message.from_user.id
-
-    dialog_manager.dialog_data['tg_id'] = tg_id
+    dialog_manager.dialog_data['tg_id'] = message.from_user.id
     await dialog_manager.start(MainDialog.menu, mode=StartMode.RESET_STACK)
 
 

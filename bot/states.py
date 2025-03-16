@@ -7,3 +7,5 @@ class MainDialog(StatesGroup):
     add_min_call = State()
     add_max_call = State()
     add_food = State()
+    food_selection = State()
+    write_grams = State()

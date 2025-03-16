@@ -1,11 +1,12 @@
 from aiogram import F
 from aiogram_dialog import Dialog, Window
-from aiogram_dialog.widgets.kbd import Button
+from aiogram_dialog.widgets.kbd import Button, ScrollingGroup, Select
 from aiogram_dialog.widgets.text import Const, Format
 from aiogram_dialog.widgets.input import TextInput
+from aiogram_dialog import DialogManager
 
 from states import MainDialog
-from logik import max_call_success, min_call_success, call_getter, add_food_success
+from logik import max_call_success, min_call_success, call_getter, add_food_success, get_user_foods_getter, select_food, call_adder
 
 start_window = Window(
     Const('''Привет, я бот для подсчета калорий и бжу.
@@ -27,7 +28,7 @@ menu_window = Window(
     Button(Const("Добавить еду"), id="add_food",
            on_click=lambda c, b, d: d.switch_to(MainDialog.add_food)),
     Button(Const("Поесть"), id="eat",
-           on_click=lambda c, b, d: d.switch_to(MainDialog.menu)),
+           on_click=lambda c, b, d: d.switch_to(MainDialog.food_selection)),
     state=MainDialog.menu
 )
 
@@ -95,6 +96,43 @@ add_food_window = Window(
     state=MainDialog.add_food
 )
 
+food_selection_window = Window(
+    Const("Выберите еду:"),
+    Const('У вас еще нет еды', when="no_food"),
+
+    ScrollingGroup(
+        Select(
+            Format('{item[0]}'),
+            id='food',
+            item_id_getter=lambda x: x[1],
+            items='food',
+            on_click=select_food,
+        ),
+        id='food_selection',
+        width=1,
+        height=4,
+    ),
+
+    Button(Const("🔙 Назад"), id="back", on_click=lambda c, b, d: d.switch_to(MainDialog.menu)),
+
+    state=MainDialog.food_selection,
+    getter=get_user_foods_getter
+)
+
+grams_write_window = Window(
+    Const('Введите сколько грамм вы съели:'),
+    Format('Вы сегодня наели на {day_call} калорий'),
+    TextInput(
+        id='grams_input',
+        on_success=call_adder,
+    ),
+    Button(Const("🔙 Назад"), id="back",
+           on_click=lambda c, b, d: d.switch_to(MainDialog.food_selection)),
+
+    state=MainDialog.write_grams,
+    getter=call_getter
+)
+
 main_dialog = Dialog(
     start_window,
     menu_window,
@@ -102,4 +140,6 @@ main_dialog = Dialog(
     add_max_call_window,
     add_min_call_window,
     add_food_window,
+    food_selection_window,
+    grams_write_window,
 )
