@@ -6,3 +6,4 @@ class MainDialog(StatesGroup):
     edit_call_limit = State()
     add_min_call = State()
     add_max_call = State()
+    add_food = State()

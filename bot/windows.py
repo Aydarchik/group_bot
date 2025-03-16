@@ -5,7 +5,7 @@ from aiogram_dialog.widgets.text import Const, Format
 from aiogram_dialog.widgets.input import TextInput
 
 from states import MainDialog
-from logik import max_call_success, min_call_success, call_getter
+from logik import max_call_success, min_call_success, call_getter, add_food_success
 
 start_window = Window(
     Const('''Привет, я бот для подсчета калорий и бжу.
@@ -25,7 +25,7 @@ menu_window = Window(
     Button(Const("Задать лимит калорий"), id="call_limit",
            on_click=lambda c, b, d: d.switch_to(MainDialog.edit_call_limit)),
     Button(Const("Добавить еду"), id="add_food",
-           on_click=lambda c, b, d: d.switch_to(MainDialog.menu)),
+           on_click=lambda c, b, d: d.switch_to(MainDialog.add_food)),
     Button(Const("Поесть"), id="eat",
            on_click=lambda c, b, d: d.switch_to(MainDialog.menu)),
     state=MainDialog.menu
@@ -83,10 +83,23 @@ add_min_call_window = Window(
     getter=call_getter
 )
 
+add_food_window = Window(
+    Const("Введите название и кбжу вашей еды на 100 грамм:"),
+    Const("Пример: 'пельмени 250 12 8 32'"),
+    TextInput(
+        id='add_food_input',
+        on_success=add_food_success,
+    ),
+    Button(Const("🔙 Назад"), id="back",
+           on_click=lambda c, b, d: d.switch_to(MainDialog.menu)),
+    state=MainDialog.add_food
+)
+
 main_dialog = Dialog(
     start_window,
     menu_window,
     call_limit_window,
     add_max_call_window,
     add_min_call_window,
+    add_food_window,
 )
