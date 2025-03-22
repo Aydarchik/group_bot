@@ -12,8 +12,8 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         tg_id INTEGER NOT NULL,
-        max_call INTEGER,
-        min_call INTEGER,
+        max_call INTEGER DEFAULT 0,
+        min_call INTEGER DEFAULT 0,
         day_call INTEGER DEFAULT 0
         )
         ''')

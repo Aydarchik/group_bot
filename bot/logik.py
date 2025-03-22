@@ -139,7 +139,7 @@ async def select_food(callback: CallbackQuery, widget: Select, dialog_manager: D
 async def call_adder(message: Message, widget: ManagedTextInput,
                           dialog_manager: DialogManager, grams: str):
     try:
-        int_grams = int(grams) // 100
+        int_grams = int(grams) / 100
     except ValueError:
         await message.answer("Введите целое число")
         return
@@ -149,7 +149,8 @@ async def call_adder(message: Message, widget: ManagedTextInput,
     day_call = db_manager.select_user_day_call(tg_id=message.from_user.id)
     print(day_call)
     print(day_call[0])
-    current_day_call = day_call[0] + int_grams  * food_call
+    float_call = (int_grams * food_call) // 1
+    current_day_call = day_call[0] + int(float_call)
     db_manager.add_day_call(
         tg_id=message.from_user.id,
         day_call=current_day_call,
